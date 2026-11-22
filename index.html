@@ -49,7 +49,7 @@
     .blink { animation: blink-anim 1.5s step-start infinite; }
     @keyframes blink-anim { 50% { opacity: 0.2; } }
 
-    /* Login & Pricing Container */
+    /* Containers & Panels */
     .container {
         max-width: 500px;
         margin: 0 auto;
@@ -96,18 +96,6 @@
     }
     .price-card h3 { margin: 0 0 5px 0; font-size: 14px; color: #aaa; }
     .price-card .amount { font-size: 18px; font-weight: bold; color: #00ff00; margin-bottom: 10px; }
-    .price-card button {
-        background: #ff3333;
-        color: white;
-        border: none;
-        padding: 8px 10px;
-        border-radius: 5px;
-        font-weight: bold;
-        cursor: pointer;
-        width: 90%;
-        font-size: 12px;
-    }
-    .price-card button:hover { background: #cc0000; }
 
     /* Inputs & Buttons */
     input[type="password"], input[type="tel"], input[type="text"] {
@@ -136,10 +124,21 @@
         cursor: pointer;
         text-transform: uppercase;
         letter-spacing: 1px;
+        margin-top: 10px;
     }
     .btn-main:hover { background: #cc0000; }
 
-    /* Dashboard Terminal Box */
+    .btn-trial {
+        background: transparent;
+        border: 1px solid #00ff00;
+        color: #00ff00;
+        margin-top: 15px;
+    }
+    .btn-trial:hover {
+        background: rgba(0, 255, 0, 0.1);
+    }
+
+    /* Terminal Box */
     .terminal-box {
         background: #000;
         border: 1px solid #333;
@@ -178,53 +177,65 @@
     }
 
     /* Error */
-    #login-error { color: #ff3333; text-align: center; margin-top: 10px; font-weight: bold; }
+    .error-msg { color: #ff3333; text-align: center; margin-top: 10px; font-weight: bold; }
 </style>
 </head>
 <body>
 
 <!-- 1. SPLASH SCREEN (IMAGE) -->
 <div id="splash-screen" onclick="showLogin()">
-    <!-- YOUR IMAGE HAS BEEN INSERTED HERE -->
     <img src="https://i.ibb.co/NnmZ6nPq/Screenshot-20261122-203843.png" alt="REBELS CLAN">
-    
     <div class="text-red" style="font-weight:bold; font-size:24px; letter-spacing:2px;">REBELs CLAN</div>
     <div class="text-gray blink" style="margin-top:10px;">[ CLICK ANYWHERE TO ENTER SYSTEM ]</div>
 </div>
 
-<!-- 2. LOGIN & PRICING SCREEN -->
+<!-- 2. LOGIN SCREEN -->
 <div id="login-screen" class="container hidden">
     <div class="panel">
-        <h2>ACCESS PLANS</h2>
+        <h2>AUTHORIZATION REQUIRED</h2>
+        <p class="text-gray" style="text-align:center; font-size:12px;">Enter access code or start a free trial.</p>
+        
+        <input type="password" id="access-code" placeholder="Enter Access Code..." onkeypress="handleLogin(event)">
+        <button class="btn-main" onclick="handleLogin({key:'Enter'})">VERIFY CODE</button>
+        
+        <button class="btn-main btn-trial" onclick="startFreeTrial()">START 1 FREE TRIAL</button>
+        
+        <div id="login-error" class="error-msg hidden">[!] INVALID ACCESS CODE</div>
+    </div>
+</div>
+
+<!-- 3. PURCHASE / PRICING SCREEN (Shown if Rebels2011 is entered) -->
+<div id="pricing-screen" class="container hidden">
+    <div class="panel">
+        <h2>BUY ACCESS CODE</h2>
+        <p class="text-gray" style="text-align:center; font-size:12px;">Select a plan, make payment, and get your access code.</p>
+        
         <div class="pricing-grid">
             <div class="price-card">
                 <h3>WEEKLY</h3>
                 <div class="amount">₦5,000</div>
-                <button onclick="alert('Contact Admin on WhatsApp to purchase.')">BUY</button>
             </div>
             <div class="price-card">
                 <h3>MONTHLY</h3>
                 <div class="amount">₦17,000</div>
-                <button onclick="alert('Contact Admin on WhatsApp to purchase.')">BUY</button>
             </div>
             <div class="price-card">
                 <h3>YEARLY</h3>
                 <div class="amount">₦45,000</div>
-                <button onclick="alert('Contact Admin on WhatsApp to purchase.')">BUY</button>
             </div>
         </div>
-    </div>
 
-    <div class="panel">
-        <h2>AUTHORIZATION REQUIRED</h2>
-        <p class="text-gray" style="text-align:center; font-size:12px;">Enter your purchased access code below to unlock the system.</p>
-        <input type="password" id="access-code" placeholder="Enter Access Code..." onkeypress="handleLogin(event)">
-        <button class="btn-main" onclick="handleLogin({key:'Enter'})">VERIFY CODE</button>
-        <div id="login-error" class="hidden">[!] INVALID ACCESS CODE</div>
+        <div style="border-top: 1px solid #333; padding-top: 15px; margin-top: 15px;">
+            <p class="text-green" style="text-align:center; font-size:12px; margin-bottom:10px;">
+                After payment, enter your generated code below to unlock.
+            </p>
+            <input type="password" id="paid-code" placeholder="Enter Purchased Code (RK2011)" onkeypress="verifyPurchase(event)">
+            <button class="btn-main" onclick="verifyPurchase({key:'Enter'})">ACTIVATE PAID CODE</button>
+        </div>
     </div>
 </div>
 
-<!-- 3. VPN & API CHECK SCREEN -->
+<!-- 4. VPN & API CHECK SCREEN -->
 <div id="loading-screen" class="container hidden" style="margin-top: 20vh;">
     <div class="panel" style="text-align:center;">
         <h2>SYSTEM INITIALIZATION</h2>
@@ -235,11 +246,15 @@
     </div>
 </div>
 
-<!-- 4. MAIN DASHBOARD (WHATSAPP BAN) -->
+<!-- 5. MAIN DASHBOARD (WHATSAPP BAN) -->
 <div id="dashboard" class="container hidden">
     <div class="panel">
         <h2 style="color:#00ff00;">WHATSAPP BAN TOOL</h2>
         
+        <div id="trial-warning" class="text-yellow hidden" style="text-align:center; margin-bottom:10px; font-weight:bold; font-size:12px;">
+            [!] FREE TRIAL ACTIVE (1 USE ONLY)
+        </div>
+
         <div class="text-gray" style="font-size:12px; margin-bottom:10px;">Select Attack Mode:</div>
         <div class="radio-group">
             <label><input type="radio" name="banType" value="Temporary" checked> Temporary Ban</label>
@@ -252,7 +267,7 @@
             <input type="tel" id="target-number" maxlength="10" placeholder="XXXXXXXXXX" style="border-radius:0 5px 5px 0; margin:0;" autocomplete="off">
         </div>
 
-        <button class="btn-main" style="margin-top:15px;" onclick="startExecution()">EXECUTE ATTACK</button>
+        <button class="btn-main" id="execute-btn" style="margin-top:15px;" onclick="startExecution()">EXECUTE ATTACK</button>
     </div>
 
     <!-- The Output Terminal -->
@@ -262,6 +277,9 @@
 </div>
 
 <script>
+    // State Management
+    let isTrial = false;
+
     // --- 1. NAVIGATION LOGIC ---
     function showLogin() {
         document.getElementById('splash-screen').classList.add('hidden');
@@ -272,8 +290,14 @@
     function handleLogin(e) {
         if (e.key === 'Enter') {
             const code = document.getElementById('access-code').value;
-            // Master codes: Rebels2011 (Admin) & RK2011 (Customer)
-            if (code === 'Rebels2011' || code === 'RK2011') {
+            
+            if (code === 'Rebels2011') {
+                // Admin goes to buy screen
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('pricing-screen').classList.remove('hidden');
+            } else if (code === 'RK2011') {
+                // Paid customer goes straight to tool
+                isTrial = false;
                 document.getElementById('login-screen').classList.add('hidden');
                 startLoadingSequence();
             } else {
@@ -282,36 +306,55 @@
         }
     }
 
-    // --- 3. FAKE VPN / API LOADING SEQUENCE ---
+    // --- 3. PURCHASE LOGIC ---
+    function verifyPurchase(e) {
+        if (e.key === 'Enter') {
+            const code = document.getElementById('paid-code').value;
+            if (code === 'RK2011') {
+                isTrial = false;
+                document.getElementById('pricing-screen').classList.add('hidden');
+                startLoadingSequence();
+            } else {
+                alert("INVALID CODE. Please ensure you have paid and entered the correct code (RK2011).");
+            }
+        }
+    }
+
+    // --- 4. FREE TRIAL LOGIC ---
+    function startFreeTrial() {
+        isTrial = true;
+        document.getElementById('login-screen').classList.add('hidden');
+        startLoadingSequence();
+    }
+
+    // --- 5. FAKE VPN / API LOADING SEQUENCE ---
     function startLoadingSequence() {
         document.getElementById('loading-screen').classList.remove('hidden');
         const progressBar = document.getElementById('progress-bar');
         const loadingText = document.getElementById('loading-text');
 
-        // Step 1: VPN
         setTimeout(() => { progressBar.style.width = '30%'; }, 500);
-        
-        // Step 2: API
         setTimeout(() => { 
             loadingText.innerHTML = "Connecting to Secure API Node...";
             progressBar.style.width = '65%'; 
         }, 1500);
-
-        // Step 3: Complete
         setTimeout(() => { 
             loadingText.innerHTML = "API CONNECTED. ACCESS GRANTED.";
             loadingText.className = "text-green";
             progressBar.style.width = '100%'; 
         }, 3000);
-
-        // Step 4: Show Dashboard
         setTimeout(() => { 
             document.getElementById('loading-screen').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
+            
+            // Handle Trial Warning
+            if (isTrial) {
+                document.getElementById('trial-warning').classList.remove('hidden');
+            }
         }, 4000);
     }
 
-    // --- 4. EXECUTION LOGIC ---
+    // --- 6. EXECUTION LOGIC ---
     function randomIP() {
         return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
     }
@@ -330,10 +373,17 @@
         const output = document.getElementById('terminal-output');
         
         outputPanel.classList.remove('hidden');
-        output.innerHTML = ''; // clear previous
+        output.innerHTML = ''; 
 
-        // Scroll to terminal
         outputPanel.scrollIntoView({ behavior: 'smooth' });
+
+        // Disable Trial
+        if (isTrial) {
+            document.getElementById('execute-btn').disabled = true;
+            document.getElementById('execute-btn').innerText = "TRIAL USED - PURCHASE CODE";
+            document.getElementById('execute-btn').style.background = "#555";
+            document.getElementById('trial-warning').innerHTML = "[!] TRIAL EXPIRED. Contact Admin to buy code.";
+        }
 
         output.innerHTML += `<div class="text-white">[*] Initializing ${banType} Ban Protocol for ${fullNumber}...</div>`;
         
@@ -346,7 +396,7 @@
         }, 800);
     }
 
-    // --- 5. FAKE LOGS GENERATOR ---
+    // --- 7. FAKE LOGS GENERATOR ---
     function runMassReport(fullNumber, banType, output) {
         let sentCount = 150; 
         let logCount = 0;
@@ -368,7 +418,6 @@
                 output.innerHTML += `<div class="${colorClass}">[REPORT] Target: ${fullNumber} | Sent: ${sentCount} | STATUS: ${status}</div>`;
             }
 
-            // Auto scroll inside the terminal box
             output.scrollTop = output.scrollHeight;
 
             if (logCount >= maxLogs) {
@@ -378,7 +427,7 @@
         }, 120); 
     }
 
-    // --- 6. PROGRESS BAR & FINAL BOX ---
+    // --- 8. PROGRESS BAR & FINAL BOX ---
     function showProgressBar(fullNumber, banType, output) {
         output.innerHTML += `<br><div class="text-green">[*] Compiling ${banType} reports...</div>`;
         let progressDiv = document.createElement('div');
@@ -436,4 +485,4 @@
 </script>
 
 </body>
-           </html>
+</html>
