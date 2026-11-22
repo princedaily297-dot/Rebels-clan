@@ -3,168 +3,248 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WHATSAPP BAN TOOLS</title>
+<title>REBELs CLAN TERMINAL</title>
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;
- font-family:Arial,sans-serif;
- background:#090909;
- color:white;
-}
-.container{
- max-width:450px;
- margin:40px auto;
- padding:20px;
-}
-.panel{
- background:#151515;
- padding:25px;
- border-radius:15px;
- border:1px solid #ff2525;
- box-shadow:0 0 15px #ff252533;
-}
-h1{
- color:#ff2929;
- text-align:center;
-}
-p{text-align:center;color:#aaa}
-input,select,button{
- width:100%;
- padding:14px;
- margin:9px 0;
- border-radius:8px;
- border:1px solid #444;
- background:#222;
- color:white;
- font-size:15px;
-}
-button{
- background:#e60000;
- border:none;
- font-weight:bold;
- cursor:pointer;
-}
-button:hover{background:#a90000}
-.card{
- background:#222;
- padding:15px;
- border-radius:10px;
- margin:12px 0;
-}
-.hidden{display:none}
-.green{background:#087b38}
-.status{
- color:#00e676;
- text-align:center;
- margin-top:12px;
-}
+    * {
+        box-sizing: border-box;
+        font-family: 'Courier New', Courier, monospace;
+    }
+    body {
+        margin: 0;
+        background-color: #000000;
+        color: #ffffff;
+        padding: 15px;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    .hidden {
+        display: none !important;
+    }
+    .text-green { color: #00ff00; }
+    .text-red { color: #ff0000; }
+    .text-blue { color: #5555ff; }
+    .text-white { color: #ffffff; }
+    
+    input, button {
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 14px;
+        outline: none;
+    }
+    button {
+        cursor: pointer;
+    }
+    button:hover {
+        text-decoration: underline;
+    }
+    
+    .input-line {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+    }
+    .input-line input {
+        width: 100%;
+        margin-left: 5px;
+    }
+
+    #terminal-output {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-top: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .ascii-box {
+        color: #00ff00;
+        line-height: 1.1;
+        white-space: pre;
+        font-family: 'Courier New', Courier, monospace;
+        margin-top: 10px;
+    }
+
+    .blink {
+        animation: blink-anim 1s step-start infinite;
+    }
+    @keyframes blink-anim {
+        50% { opacity: 0; }
+    }
 </style>
 </head>
 <body>
 
-<div class="container">
-
-<div class="panel" id="login">
-<h1>🔥 WHATSAPP BAN TOOLS</h1>
-<p>ADMIN ACCESS PANEL</p>
-<input type="password" id="access"
-placeholder="Enter Access Code">
-<button onclick="login()">UNLOCK PANEL</button>
-<p id="error" style="color:red"></p>
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+    <div class="text-green">[*] SYSTEM SECURITY CHECK</div>
+    <div class="text-red">[!] ENTER ACCESS CODE TO CONTINUE</div>
+    <div class="input-line">
+        <span class="text-blue">root@rebel:~#</span>
+        <input type="password" id="access-code" placeholder="Enter code..." onkeypress="handleLogin(event)">
+    </div>
+    <div id="login-error" class="text-red hidden" style="margin-top:10px;">[!] ACCESS DENIED. INCORRECT CODE.</div>
 </div>
 
-<div class="panel hidden" id="dashboard">
-<h1>🔥WA CONTROL</h1>
-<p>ADMIN DASHBOARD</p>
-
-<div class="card">
-<h3>Permanent Ban</h3>
-<input id="permanentNumber"
-placeholder="Enter target number">
-<button onclick="action('Permanent ban request')">
-PERMANENT BAN
-</button>
+<!-- MAIN MENU -->
+<div id="main-menu" class="hidden">
+    <div class="text-blue" style="text-align:center; font-weight:bold; font-size:16px; margin-bottom: 20px;">
+        REBELs CLAN judgement Whatsapp tools
+    </div>
+    
+    <div class="text-blue">
+        <div>[1] WhatsApp Account Ban/Unban</div>
+        <div>[2] Instagram Account Ban/Unban</div>
+        <div>[3] Facebook Account Ban/Unban</div>
+        <div>[4] TikTok Account Ban/Unban</div>
+        <div>[5] YouTube Channel Ban/Unban</div>
+        <div>[6] Telegram Account Ban/Unban</div>
+        <div>[7] Exit System</div>
+    </div>
+    <br>
+    <div class="text-green">
+        <span>└─> Select Platform [1-7]: </span>
+        <input type="text" id="menu-choice" style="width: 30px;" onkeypress="handleMenuChoice(event)" autocomplete="off">
+    </div>
 </div>
 
-<div class="card">
-<h3>Temporary Ban</h3>
-<input id="temporaryNumber"
-placeholder="Enter target number">
-<select id="duration">
-<option>24 Hours</option>
-<option>48 Hours</option>
-<option>72 Hours</option>
-<option>7 Days</option>
-</select>
-<button onclick="action('Temporary ban request')">
-TEMPORARY BAN
-</button>
+<!-- WHATSAPP BAN INPUT -->
+<div id="wa-input-screen" class="hidden">
+    <div class="text-green">[*] WHATSAPP BAN TOOL INITIALIZED</div>
+    <div class="text-white">Enter target number (10 digits):</div>
+    <div class="input-line">
+        <span class="text-blue">+234</span>
+        <input type="tel" id="target-number" maxlength="10" placeholder="XXXXXXXXXX" autocomplete="off">
+    </div>
+    <button class="text-red" style="margin-top: 15px;" onclick="startFakeReport()">[ PRESS ENTER TO EXECUTE ]</button>
 </div>
 
-<div class="card">
-<h3>Unban Request</h3>
-<input id="unbanNumber"
-placeholder="Enter number">
-<button class="green"
-onclick="action('Unban request')">
-UNBAN
-</button>
-</div>
-
-<div class="card">
-<h3>Activity Log</h3>
-<div id="logs">No activity yet.</div>
-</div>
-
-<button onclick="logout()">LOG OUT</button>
-</div>
-</div>
+<!-- TERMINAL OUTPUT (LOGS) -->
+<div id="terminal-output" class="hidden"></div>
 
 <script>
-function login(){
- const code=document.getElementById("access").value;
- if(code==="Kelvin2345"){
-  document.getElementById("login").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
- }else{
-  document.getElementById("error").textContent="Incorrect access code!";
- }
-}
+    // Login Logic
+    function handleLogin(e) {
+        if (e.key === 'Enter') {
+            const code = document.getElementById('access-code').value;
+            // Password updated to Rebels2011
+            if (code === 'Rebels2011') { 
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('main-menu').classList.remove('hidden');
+                document.getElementById('menu-choice').focus();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+    }
 
-function action(type){
- let number="";
- if(type==="Permanent ban request")
- number=document.getElementById("permanentNumber").value;
- if(type==="Temporary ban request")
- number=document.getElementById("temporaryNumber").value;
- if(type==="Unban request")
- number=document.getElementById("unbanNumber").value;
+    // Menu Logic
+    function handleMenuChoice(e) {
+        if (e.key === 'Enter') {
+            const choice = document.getElementById('menu-choice').value;
+            if (choice === '1') {
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('wa-input-screen').classList.remove('hidden');
+                document.getElementById('target-number').focus();
+            } else if (choice === '7') {
+                location.reload(); // Exits system
+            } else {
+                alert("[!] SYSTEM ERROR: Only Option [1] is currently active.");
+                document.getElementById('menu-choice').value = '';
+            }
+        }
+    }
 
- if(!number.trim()){
-  alert("Please enter a phone number");
-  return;
- }
+    // Fake Reporting Logic
+    let reportInterval;
+    function startFakeReport() {
+        const numInput = document.getElementById('target-number').value;
+        if (numInput.length !== 10 || isNaN(numInput)) {
+            alert("ERROR: Enter a valid 10-digit number.");
+            return;
+        }
 
- let detail=type;
- if(type==="Temporary ban request"){
- detail+=" ("+document.getElementById("duration").value+")";
- }
+        const fullNumber = "+234" + numInput;
+        
+        // Hide input, show output
+        document.getElementById('wa-input-screen').classList.add('hidden');
+        const output = document.getElementById('terminal-output');
+        output.classList.remove('hidden');
+        output.innerHTML = '';
 
- const logs=document.getElementById("logs");
- if(logs.textContent==="No activity yet.") logs.innerHTML="";
- logs.innerHTML+="<p>✔ "+detail+" — "+number+
- "<br><small>Local demo request only</small></p>";
+        let sentCount = 50; // Starting fake "Sent" count
+        let logCount = 0;
+        const maxLogs = 35; // How many lines to print before stopping
 
- alert("Demo request recorded successfully!");
-}
+        // Add initial line
+        output.innerHTML += `<div class="text-white">Target acquired: ${fullNumber}</div>`;
+        output.innerHTML += `<div class="text-red">Initiating mass report sequence...</div><br>`;
 
-function logout(){
- document.getElementById("dashboard").classList.add("hidden");
- document.getElementById("login").classList.remove("hidden");
- document.getElementById("access").value="";
-}
+        // Scroll logs
+        reportInterval = setInterval(() => {
+            logCount++;
+            sentCount += Math.floor(Math.random() * 3) + 1; 
+            
+            const status = Math.random() > 0.8 ? "SUCCESS" : "PENDING";
+            const colorClass = status === "SUCCESS" ? "text-green" : "text-red";
+
+            const log = document.createElement('div');
+            log.className = colorClass;
+            log.innerHTML = `[REPORT] WhatsApp Target: ${fullNumber} | Sent: ${sentCount} | STATUS: ${status}`;
+            output.appendChild(log);
+
+            // Auto scroll to bottom
+            window.scrollTo(0, document.body.scrollHeight);
+
+            // Stop after maxLogs
+            if (logCount >= maxLogs) {
+                clearInterval(reportInterval);
+                showFinalResult(fullNumber);
+            }
+        }, 150); // Speed of logs appearing (150ms)
+    }
+
+    // Final Success Box Logic
+    function showFinalResult(number) {
+        const output = document.getElementById('terminal-output');
+        
+        // Add a small delay before showing the final box
+        setTimeout(() => {
+            output.innerHTML += `
+            <br>
+            <div class="ascii-box">
+┌────────────────────────────────────────────────────────┐
+│                                                        │
+│          WHATSAPP REPORT SUBMITTED                     │
+│                                                        │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│   TARGET   : ${number}                         │
+│                                                        │
+│   STATUS   : <span class="text-red">SUCCESSFULLY REPORTED</span>                 │
+│                                                        │
+│   EST. TIME: 24 TO 48 HOURS                            │
+│                                                        │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│   <span class="text-red">[!] NOTE: IF ACCOUNT IS NOT BANNED, TRY AGAIN.</span>        │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+            </div>
+            <br>
+            <div class="text-white">Press ENTER to return... <span class="blink">█</span></div>
+            `;
+            
+            // Listen for Enter to reload page
+            document.addEventListener('keydown', function returnToMenu(e) {
+                if (e.key === 'Enter') {
+                    location.reload();
+                }
+            });
+
+        }, 500); 
+    }
 </script>
 
 </body>
-  </html>
+</html>
