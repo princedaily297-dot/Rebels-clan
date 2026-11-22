@@ -178,8 +178,9 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         margin-top: 10px;
+        transition: 0.2s;
     }
-    .btn-main:hover { background: #cc0000; }
+    .btn-main:active { background: #990000; transform: scale(0.98); }
 
     /* Terminal Box */
     .terminal-box {
@@ -238,10 +239,13 @@
         <h2>AUTHORIZATION REQUIRED</h2>
         <p class="text-gray" style="text-align:center; font-size:12px;">Enter access code to unlock the system.</p>
         
-        <input type="password" id="access-code" placeholder="Enter Access Code..." onkeypress="handleLogin(event)">
-        <button class="btn-main" onclick="handleLogin({key:'Enter'})">VERIFY CODE</button>
+        <!-- Changed to onkeydown for better mobile compatibility -->
+        <input type="password" id="access-code" placeholder="Enter Access Code..." onkeydown="if(event.key==='Enter') handleLogin()">
         
-        <div id="login-error" class="error-msg hidden">[!] INVALID ACCESS CODE</div>
+        <!-- Explicitly made it a button type -->
+        <button type="button" class="btn-main" onclick="handleLogin()">VERIFY CODE</button>
+        
+        <div id="login-error" class="error-msg hidden">[!] INVALID ACCESS CODE. CHECK FOR TYPOS.</div>
 
         <!-- LIVE FEED REPLACEMENT -->
         <div class="mini-terminal">
@@ -292,8 +296,8 @@
             <p class="text-green" style="text-align:center; font-size:12px; margin-bottom:10px;">
                 After payment, enter your generated code below to unlock.
             </p>
-            <input type="password" id="paid-code" placeholder="Enter Purchased Code..." onkeypress="verifyPurchase(event)">
-            <button class="btn-main" onclick="verifyPurchase({key:'Enter'})">ACTIVATE PAID CODE</button>
+            <input type="password" id="paid-code" placeholder="Enter Purchased Code..." onkeydown="if(event.key==='Enter') verifyPurchase()">
+            <button type="button" class="btn-main" onclick="verifyPurchase()">ACTIVATE PAID CODE</button>
         </div>
     </div>
 </div>
@@ -326,7 +330,7 @@
             <input type="tel" id="target-number" maxlength="10" placeholder="XXXXXXXXXX" style="border-radius:0 5px 5px 0; margin:0;" autocomplete="off">
         </div>
 
-        <button class="btn-main" id="execute-btn" style="margin-top:15px;" onclick="startExecution()">EXECUTE ATTACK</button>
+        <button type="button" class="btn-main" id="execute-btn" style="margin-top:15px;" onclick="startExecution()">EXECUTE ATTACK</button>
     </div>
 
     <!-- The Output Terminal -->
@@ -348,59 +352,51 @@
         const feedContainer = document.getElementById('live-feed');
         
         setInterval(() => {
-            // Generate a random 10-digit Nigerian number
             let randomNum = Math.floor(1000000000 + Math.random() * 9000000000).toString();
-            // Format it: +234 812 345 6789
             let formattedNum = `+234 ${randomNum.substring(0,3)} ${randomNum.substring(3,6)} ${randomNum.substring(6,10)}`;
             
             let status = Math.random() > 0.2 ? "PENDING" : "SUCCESS";
             let color = status === "SUCCESS" ? "text-green" : "text-red";
 
-            // Create log line
             let logLine = document.createElement('div');
             logLine.className = color;
             logLine.style.marginBottom = "2px";
             logLine.innerHTML = `[REPORT] Target: ${formattedNum} | Sent: ${Math.floor(Math.random()*200)+50} | STATUS: ${status}`;
 
-            // Add to feed
             feedContainer.appendChild(logLine);
 
-            // Keep only the last 5 lines to make it scroll
             if (feedContainer.children.length > 5) {
                 feedContainer.removeChild(feedContainer.firstChild);
             }
-        }, 1200); // Adds a new line every 1.2 seconds
+        }, 1200);
     }
 
     // --- 3. LOGIN LOGIC ---
-    function handleLogin(e) {
-        if (e.key === 'Enter') {
-            const code = document.getElementById('access-code').value;
-            
-            if (code === 'Rebels2011') {
-                // Admin goes to buy screen
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('pricing-screen').classList.remove('hidden');
-            } else if (code === 'RK2011') {
-                // Paid customer goes straight to tool
-                document.getElementById('login-screen').classList.add('hidden');
-                startLoadingSequence();
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-            }
+    function handleLogin() {
+        // Grab value and remove any accidental spaces
+        const code = document.getElementById('access-code').value.trim();
+        
+        if (code === 'Rebels2011') {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('pricing-screen').classList.remove('hidden');
+        } else if (code === 'RK2011') {
+            document.getElementById('login-screen').classList.add('hidden');
+            startLoadingSequence();
+        } else {
+            // Show error clearly
+            document.getElementById('login-error').classList.remove('hidden');
         }
     }
 
     // --- 4. PURCHASE LOGIC ---
-    function verifyPurchase(e) {
-        if (e.key === 'Enter') {
-            const code = document.getElementById('paid-code').value;
-            if (code === 'RK2011') {
-                document.getElementById('pricing-screen').classList.add('hidden');
-                startLoadingSequence();
-            } else {
-                alert("INVALID CODE. Please ensure you have paid and entered the correct code.");
-            }
+    function verifyPurchase() {
+        const code = document.getElementById('paid-code').value.trim();
+        
+        if (code === 'RK2011') {
+            document.getElementById('pricing-screen').classList.add('hidden');
+            startLoadingSequence();
+        } else {
+            alert("INVALID CODE. Please ensure you have paid and entered the correct code.");
         }
     }
 
@@ -432,7 +428,7 @@
     }
 
     function startExecution() {
-        const numInput = document.getElementById('target-number').value;
+        const numInput = document.getElementById('target-number').value.trim();
         const banType = document.querySelector('input[name="banType"]:checked').value;
 
         if (numInput.length !== 10 || isNaN(numInput)) {
@@ -516,7 +512,7 @@
         }, 200);
     }
 
-    // --- 9. UPDATED FINAL BOX ---
+    // --- 9. FINAL BOX WITH REBELS/OBSIDIAN ---
     function showFinalResult(number, banType, output) {
         setTimeout(() => {
             output.innerHTML += `
@@ -540,4 +536,7 @@
 │                                                        │
 │   <span class="text-red">[!] NOTE: IF ACCOUNT IS NOT BANNED, TRY AGAIN.</span>        │
 │                                                        │
-└──────────────────────────────────────────
+└────────────────────────────────────────────────────────┘
+            </div>
+            <br>
+            <div class="text-white" style="text-align:center;">[ ATTACK COMPLETE ]
