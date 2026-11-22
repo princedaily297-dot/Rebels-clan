@@ -87,15 +87,36 @@
         border: 1px solid #444;
         border-radius: 8px;
         text-align: center;
-        padding: 15px 5px;
+        padding: 15px 10px;
         transition: 0.3s;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .price-card:hover {
         border-color: #ff3333;
         box-shadow: 0 0 10px rgba(255,51,51,0.3);
     }
     .price-card h3 { margin: 0 0 5px 0; font-size: 14px; color: #aaa; }
-    .price-card .amount { font-size: 18px; font-weight: bold; color: #00ff00; margin-bottom: 10px; }
+    .price-card .amount { font-size: 18px; font-weight: bold; color: #00ff00; margin-bottom: 15px; }
+    
+    /* WhatsApp Buy Button */
+    .buy-btn {
+        display: block;
+        background: #25D366; /* WhatsApp Green */
+        color: #000;
+        text-decoration: none;
+        padding: 10px 5px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 13px;
+        text-transform: uppercase;
+        transition: 0.2s;
+    }
+    .buy-btn:hover {
+        background: #1ebe5d;
+        transform: scale(1.05);
+    }
 
     /* Inputs & Buttons */
     input[type="password"], input[type="tel"], input[type="text"] {
@@ -208,20 +229,32 @@
 <div id="pricing-screen" class="container hidden">
     <div class="panel">
         <h2>BUY ACCESS CODE</h2>
-        <p class="text-gray" style="text-align:center; font-size:12px;">Select a plan, make payment, and get your access code.</p>
+        <p class="text-gray" style="text-align:center; font-size:12px; margin-bottom: 15px;">Select a plan to purchase via WhatsApp.</p>
         
         <div class="pricing-grid">
             <div class="price-card">
-                <h3>WEEKLY</h3>
-                <div class="amount">₦5,000</div>
+                <div>
+                    <h3>WEEKLY</h3>
+                    <div class="amount">₦5,000</div>
+                </div>
+                <!-- WhatsApp Redirect Links -->
+                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20WEEKLY%20Access%20Code%20for%205k" target="_blank" class="buy-btn">BUY NOW</a>
             </div>
+            
             <div class="price-card">
-                <h3>MONTHLY</h3>
-                <div class="amount">₦17,000</div>
+                <div>
+                    <h3>MONTHLY</h3>
+                    <div class="amount">₦17,000</div>
+                </div>
+                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20MONTHLY%20Access%20Code%20for%2017k" target="_blank" class="buy-btn">BUY NOW</a>
             </div>
+            
             <div class="price-card">
-                <h3>YEARLY</h3>
-                <div class="amount">₦45,000</div>
+                <div>
+                    <h3>YEARLY</h3>
+                    <div class="amount">₦45,000</div>
+                </div>
+                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20YEARLY%20Access%20Code%20for%2045k" target="_blank" class="buy-btn">BUY NOW</a>
             </div>
         </div>
 
@@ -229,7 +262,7 @@
             <p class="text-green" style="text-align:center; font-size:12px; margin-bottom:10px;">
                 After payment, enter your generated code below to unlock.
             </p>
-            <input type="password" id="paid-code" placeholder="Enter Purchased Code (RK2011)" onkeypress="verifyPurchase(event)">
+            <input type="password" id="paid-code" placeholder="Enter Purchased Code..." onkeypress="verifyPurchase(event)">
             <button class="btn-main" onclick="verifyPurchase({key:'Enter'})">ACTIVATE PAID CODE</button>
         </div>
     </div>
@@ -315,7 +348,7 @@
                 document.getElementById('pricing-screen').classList.add('hidden');
                 startLoadingSequence();
             } else {
-                alert("INVALID CODE. Please ensure you have paid and entered the correct code (RK2011).");
+                alert("INVALID CODE. Please ensure you have paid and entered the correct code.");
             }
         }
     }
