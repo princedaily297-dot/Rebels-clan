@@ -75,7 +75,7 @@
         padding-bottom: 10px;
     }
 
-    /* Live Feed Terminal (Login Screen) */
+    /* Live Feed Terminal */
     .mini-terminal {
         background: #000;
         border: 1px solid #00ff00;
@@ -145,10 +145,7 @@
         text-transform: uppercase;
         transition: 0.2s;
     }
-    .buy-btn:hover {
-        background: #1ebe5d;
-        transform: scale(1.05);
-    }
+    .buy-btn:hover { background: #1ebe5d; }
 
     /* Inputs & Buttons */
     input[type="password"], input[type="tel"], input[type="text"] {
@@ -178,9 +175,8 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         margin-top: 10px;
-        transition: 0.2s;
     }
-    .btn-main:active { background: #990000; transform: scale(0.98); }
+    .btn-main:hover { background: #cc0000; }
 
     /* Terminal Box */
     .terminal-box {
@@ -239,28 +235,23 @@
         <h2>AUTHORIZATION REQUIRED</h2>
         <p class="text-gray" style="text-align:center; font-size:12px;">Enter access code to unlock the system.</p>
         
-        <!-- Changed to onkeydown for better mobile compatibility -->
-        <input type="password" id="access-code" placeholder="Enter Access Code..." onkeydown="if(event.key==='Enter') handleLogin()">
-        
-        <!-- Explicitly made it a button type -->
-        <button type="button" class="btn-main" onclick="handleLogin()">VERIFY CODE</button>
+        <input type="password" id="access-code" placeholder="Enter Access Code..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); handleLogin(); }">
+        <button type="button" class="btn-main" onclick="handleLogin(); return false;">VERIFY CODE</button>
         
         <div id="login-error" class="error-msg hidden">[!] INVALID ACCESS CODE. CHECK FOR TYPOS.</div>
 
-        <!-- LIVE FEED REPLACEMENT -->
+        <!-- LIVE FEED -->
         <div class="mini-terminal">
             <div class="mini-terminal-header">
                 <span>SYSTEM LIVE FEED</span>
                 <span class="blink text-red">● REC</span>
             </div>
-            <div class="mini-terminal-content" id="live-feed">
-                <!-- Logs inject here -->
-            </div>
+            <div class="mini-terminal-content" id="live-feed"></div>
         </div>
     </div>
 </div>
 
-<!-- 3. PURCHASE / PRICING SCREEN (Shown if Rebels2011 is entered) -->
+<!-- 3. PURCHASE SCREEN -->
 <div id="pricing-screen" class="container hidden">
     <div class="panel">
         <h2>BUY ACCESS CODE</h2>
@@ -272,7 +263,7 @@
                     <h3>WEEKLY</h3>
                     <div class="amount">₦5,000</div>
                 </div>
-                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20WEEKLY%20Access%20Code%20for%205k" target="_blank" class="buy-btn">BUY NOW</a>
+                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20WEEKLY%20Access%20Code%20for%205k" target="_blank" rel="noopener noreferrer" class="buy-btn">BUY NOW</a>
             </div>
             
             <div class="price-card">
@@ -280,7 +271,7 @@
                     <h3>MONTHLY</h3>
                     <div class="amount">₦17,000</div>
                 </div>
-                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20MONTHLY%20Access%20Code%20for%2017k" target="_blank" class="buy-btn">BUY NOW</a>
+                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20MONTHLY%20Access%20Code%20for%2017k" target="_blank" rel="noopener noreferrer" class="buy-btn">BUY NOW</a>
             </div>
             
             <div class="price-card">
@@ -288,7 +279,7 @@
                     <h3>YEARLY</h3>
                     <div class="amount">₦45,000</div>
                 </div>
-                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20YEARLY%20Access%20Code%20for%2045k" target="_blank" class="buy-btn">BUY NOW</a>
+                <a href="https://wa.me/2348163893071?text=Hello%20Admin,%20I%20want%20to%20buy%20the%20YEARLY%20Access%20Code%20for%2045k" target="_blank" rel="noopener noreferrer" class="buy-btn">BUY NOW</a>
             </div>
         </div>
 
@@ -296,8 +287,8 @@
             <p class="text-green" style="text-align:center; font-size:12px; margin-bottom:10px;">
                 After payment, enter your generated code below to unlock.
             </p>
-            <input type="password" id="paid-code" placeholder="Enter Purchased Code..." onkeydown="if(event.key==='Enter') verifyPurchase()">
-            <button type="button" class="btn-main" onclick="verifyPurchase()">ACTIVATE PAID CODE</button>
+            <input type="password" id="paid-code" placeholder="Enter Purchased Code..." onkeydown="if(event.key === 'Enter') { event.preventDefault(); verifyPurchase(); }">
+            <button type="button" class="btn-main" onclick="verifyPurchase(); return false;">ACTIVATE PAID CODE</button>
         </div>
     </div>
 </div>
@@ -313,7 +304,7 @@
     </div>
 </div>
 
-<!-- 5. MAIN DASHBOARD (WHATSAPP BAN) -->
+<!-- 5. MAIN DASHBOARD -->
 <div id="dashboard" class="container hidden">
     <div class="panel">
         <h2 style="color:#00ff00;">WHATSAPP BAN TOOL</h2>
@@ -330,10 +321,9 @@
             <input type="tel" id="target-number" maxlength="10" placeholder="XXXXXXXXXX" style="border-radius:0 5px 5px 0; margin:0;" autocomplete="off">
         </div>
 
-        <button type="button" class="btn-main" id="execute-btn" style="margin-top:15px;" onclick="startExecution()">EXECUTE ATTACK</button>
+        <button type="button" class="btn-main" id="execute-btn" style="margin-top:15px;" onclick="startExecution(); return false;">EXECUTE ATTACK</button>
     </div>
 
-    <!-- The Output Terminal -->
     <div id="terminal-panel" class="panel hidden">
         <div id="terminal-output" class="terminal-box"></div>
     </div>
@@ -344,17 +334,15 @@
     function showLogin() {
         document.getElementById('splash-screen').classList.add('hidden');
         document.getElementById('login-screen').classList.remove('hidden');
-        startLiveFeed(); // Start the fake background activity
+        startLiveFeed(); 
     }
 
     // --- 2. LIVE BACKGROUND DEMO FEED ---
     function startLiveFeed() {
         const feedContainer = document.getElementById('live-feed');
-        
         setInterval(() => {
             let randomNum = Math.floor(1000000000 + Math.random() * 9000000000).toString();
             let formattedNum = `+234 ${randomNum.substring(0,3)} ${randomNum.substring(3,6)} ${randomNum.substring(6,10)}`;
-            
             let status = Math.random() > 0.2 ? "PENDING" : "SUCCESS";
             let color = status === "SUCCESS" ? "text-green" : "text-red";
 
@@ -362,20 +350,17 @@
             logLine.className = color;
             logLine.style.marginBottom = "2px";
             logLine.innerHTML = `[REPORT] Target: ${formattedNum} | Sent: ${Math.floor(Math.random()*200)+50} | STATUS: ${status}`;
-
             feedContainer.appendChild(logLine);
 
             if (feedContainer.children.length > 5) {
                 feedContainer.removeChild(feedContainer.firstChild);
             }
-        }, 1200);
+        }, 1200); 
     }
 
     // --- 3. LOGIN LOGIC ---
     function handleLogin() {
-        // Grab value and remove any accidental spaces
         const code = document.getElementById('access-code').value.trim();
-        
         if (code === 'Rebels2011') {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('pricing-screen').classList.remove('hidden');
@@ -383,7 +368,6 @@
             document.getElementById('login-screen').classList.add('hidden');
             startLoadingSequence();
         } else {
-            // Show error clearly
             document.getElementById('login-error').classList.remove('hidden');
         }
     }
@@ -391,7 +375,6 @@
     // --- 4. PURCHASE LOGIC ---
     function verifyPurchase() {
         const code = document.getElementById('paid-code').value.trim();
-        
         if (code === 'RK2011') {
             document.getElementById('pricing-screen').classList.add('hidden');
             startLoadingSequence();
@@ -407,19 +390,9 @@
         const loadingText = document.getElementById('loading-text');
 
         setTimeout(() => { progressBar.style.width = '30%'; }, 500);
-        setTimeout(() => { 
-            loadingText.innerHTML = "Connecting to Secure API Node...";
-            progressBar.style.width = '65%'; 
-        }, 1500);
-        setTimeout(() => { 
-            loadingText.innerHTML = "API CONNECTED. ACCESS GRANTED.";
-            loadingText.className = "text-green";
-            progressBar.style.width = '100%'; 
-        }, 3000);
-        setTimeout(() => { 
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-        }, 4000);
+        setTimeout(() => { loadingText.innerHTML = "Connecting to Secure API Node..."; progressBar.style.width = '65%'; }, 1500);
+        setTimeout(() => { loadingText.innerHTML = "API CONNECTED. ACCESS GRANTED."; loadingText.className = "text-green"; progressBar.style.width = '100%'; }, 3000);
+        setTimeout(() => { document.getElementById('loading-screen').classList.add('hidden'); document.getElementById('dashboard').classList.remove('hidden'); }, 4000);
     }
 
     // --- 6. EXECUTION LOGIC ---
@@ -442,7 +415,6 @@
         
         outputPanel.classList.remove('hidden');
         output.innerHTML = ''; 
-
         outputPanel.scrollIntoView({ behavior: 'smooth' });
 
         output.innerHTML += `<div class="text-white">[*] Initializing ${banType} Ban Protocol for ${fullNumber}...</div>`;
@@ -465,7 +437,6 @@
         const interval = setInterval(() => {
             logCount++;
             sentCount += Math.floor(Math.random() * 5) + 1; 
-            
             const logType = Math.random();
             
             if (logType > 0.85) {
@@ -498,12 +469,9 @@
         const progressInterval = setInterval(() => {
             percent += Math.floor(Math.random() * 20) + 10;
             if (percent > 100) percent = 100;
-            
             let bars = Math.floor(percent / 5);
             let empty = 20 - bars;
-            let barString = "█".repeat(bars) + "░".repeat(empty);
-            
-            progressDiv.innerHTML = `[${barString}] ${percent}%`;
+            progressDiv.innerHTML = `[${"█".repeat(bars)}${"░".repeat(empty)}] ${percent}%`;
 
             if (percent === 100) {
                 clearInterval(progressInterval);
@@ -512,7 +480,6 @@
         }, 200);
     }
 
-    // --- 9. FINAL BOX WITH REBELS/OBSIDIAN ---
     function showFinalResult(number, banType, output) {
         setTimeout(() => {
             output.innerHTML += `
@@ -539,4 +506,12 @@
 └────────────────────────────────────────────────────────┘
             </div>
             <br>
-            <div class="text-white" style="text-align:center;">[ ATTACK COMPLETE ]
+            <div class="text-white" style="text-align:center;">[ ATTACK COMPLETE ]</div>
+            `;
+            output.scrollTop = output.scrollHeight;
+        }, 600); 
+    }
+</script>
+
+</body>
+</html>
