@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHATSAPP BAN TOOLS</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#090909;
+ color:white;
+}
+.container{
+ max-width:450px;
+ margin:40px auto;
+ padding:20px;
+}
+.panel{
+ background:#151515;
+ padding:25px;
+ border-radius:15px;
+ border:1px solid #ff2525;
+ box-shadow:0 0 15px #ff252533;
+}
+h1{
+ color:#ff2929;
+ text-align:center;
+}
+p{text-align:center;color:#aaa}
+input,select,button{
+ width:100%;
+ padding:14px;
+ margin:9px 0;
+ border-radius:8px;
+ border:1px solid #444;
+ background:#222;
+ color:white;
+ font-size:15px;
+}
+button{
+ background:#e60000;
+ border:none;
+ font-weight:bold;
+ cursor:pointer;
+}
+button:hover{background:#a90000}
+.card{
+ background:#222;
+ padding:15px;
+ border-radius:10px;
+ margin:12px 0;
+}
+.hidden{display:none}
+.green{background:#087b38}
+.status{
+ color:#00e676;
+ text-align:center;
+ margin-top:12px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="panel" id="login">
+<h1>🔥 WHATSAPP BAN TOOLS</h1>
+<p>ADMIN ACCESS PANEL</p>
+<input type="password" id="access"
+placeholder="Enter Access Code">
+<button onclick="login()">UNLOCK PANEL</button>
+<p id="error" style="color:red"></p>
+</div>
+
+<div class="panel hidden" id="dashboard">
+<h1>🔥WA CONTROL</h1>
+<p>ADMIN DASHBOARD</p>
+
+<div class="card">
+<h3>Permanent Ban</h3>
+<input id="permanentNumber"
+placeholder="Enter target number">
+<button onclick="action('Permanent ban request')">
+PERMANENT BAN
+</button>
+</div>
+
+<div class="card">
+<h3>Temporary Ban</h3>
+<input id="temporaryNumber"
+placeholder="Enter target number">
+<select id="duration">
+<option>24 Hours</option>
+<option>48 Hours</option>
+<option>72 Hours</option>
+<option>7 Days</option>
+</select>
+<button onclick="action('Temporary ban request')">
+TEMPORARY BAN
+</button>
+</div>
+
+<div class="card">
+<h3>Unban Request</h3>
+<input id="unbanNumber"
+placeholder="Enter number">
+<button class="green"
+onclick="action('Unban request')">
+UNBAN
+</button>
+</div>
+
+<div class="card">
+<h3>Activity Log</h3>
+<div id="logs">No activity yet.</div>
+</div>
+
+<button onclick="logout()">LOG OUT</button>
+</div>
+</div>
+
+<script>
+function login(){
+ const code=document.getElementById("access").value;
+ if(code==="Kelvin2345"){
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+ }else{
+  document.getElementById("error").textContent="Incorrect access code!";
+ }
+}
+
+function action(type){
+ let number="";
+ if(type==="Permanent ban request")
+ number=document.getElementById("permanentNumber").value;
+ if(type==="Temporary ban request")
+ number=document.getElementById("temporaryNumber").value;
+ if(type==="Unban request")
+ number=document.getElementById("unbanNumber").value;
+
+ if(!number.trim()){
+  alert("Please enter a phone number");
+  return;
+ }
+
+ let detail=type;
+ if(type==="Temporary ban request"){
+ detail+=" ("+document.getElementById("duration").value+")";
+ }
+
+ const logs=document.getElementById("logs");
+ if(logs.textContent==="No activity yet.") logs.innerHTML="";
+ logs.innerHTML+="<p>✔ "+detail+" — "+number+
+ "<br><small>Local demo request only</small></p>";
+
+ alert("Demo request recorded successfully!");
+}
+
+function logout(){
+ document.getElementById("dashboard").classList.add("hidden");
+ document.getElementById("login").classList.remove("hidden");
+ document.getElementById("access").value="";
+}
+</script>
+
+</body>
+  </html>
