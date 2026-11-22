@@ -22,6 +22,7 @@
     }
     .text-green { color: #00ff00; }
     .text-red { color: #ff0000; }
+    .text-yellow { color: #ffcc00; }
     .text-blue { color: #5555ff; }
     .text-white { color: #ffffff; }
     
@@ -127,7 +128,6 @@
     function handleLogin(e) {
         if (e.key === 'Enter') {
             const code = document.getElementById('access-code').value;
-            // Password updated to Rebels2011
             if (code === 'Rebels2011') { 
                 document.getElementById('login-screen').classList.add('hidden');
                 document.getElementById('main-menu').classList.remove('hidden');
@@ -147,7 +147,7 @@
                 document.getElementById('wa-input-screen').classList.remove('hidden');
                 document.getElementById('target-number').focus();
             } else if (choice === '7') {
-                location.reload(); // Exits system
+                location.reload();
             } else {
                 alert("[!] SYSTEM ERROR: Only Option [1] is currently active.");
                 document.getElementById('menu-choice').value = '';
@@ -155,8 +155,12 @@
         }
     }
 
+    // Helper function for random IPs
+    function randomIP() {
+        return `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+    }
+
     // Fake Reporting Logic
-    let reportInterval;
     function startFakeReport() {
         const numInput = document.getElementById('target-number').value;
         if (numInput.length !== 10 || isNaN(numInput)) {
@@ -165,50 +169,90 @@
         }
 
         const fullNumber = "+234" + numInput;
-        
-        // Hide input, show output
         document.getElementById('wa-input-screen').classList.add('hidden');
         const output = document.getElementById('terminal-output');
         output.classList.remove('hidden');
         output.innerHTML = '';
 
-        let sentCount = 50; // Starting fake "Sent" count
-        let logCount = 0;
-        const maxLogs = 35; // How many lines to print before stopping
-
-        // Add initial line
-        output.innerHTML += `<div class="text-white">Target acquired: ${fullNumber}</div>`;
-        output.innerHTML += `<div class="text-red">Initiating mass report sequence...</div><br>`;
-
-        // Scroll logs
-        reportInterval = setInterval(() => {
-            logCount++;
-            sentCount += Math.floor(Math.random() * 3) + 1; 
-            
-            const status = Math.random() > 0.8 ? "SUCCESS" : "PENDING";
-            const colorClass = status === "SUCCESS" ? "text-green" : "text-red";
-
-            const log = document.createElement('div');
-            log.className = colorClass;
-            log.innerHTML = `[REPORT] WhatsApp Target: ${fullNumber} | Sent: ${sentCount} | STATUS: ${status}`;
-            output.appendChild(log);
-
-            // Auto scroll to bottom
-            window.scrollTo(0, document.body.scrollHeight);
-
-            // Stop after maxLogs
-            if (logCount >= maxLogs) {
-                clearInterval(reportInterval);
-                showFinalResult(fullNumber);
-            }
-        }, 150); // Speed of logs appearing (150ms)
+        // Phase 1: Initialization
+        output.innerHTML += `<div class="text-yellow">[*] Initializing attack vectors...</div>`;
+        
+        setTimeout(() => {
+            output.innerHTML += `<div class="text-yellow">[*] Connecting to Telegram API Gateway...</div>`;
+            setTimeout(() => {
+                output.innerHTML += `<div class="text-green">[+] Connection established. [Ping: ${Math.floor(Math.random()*40)+10}ms]</div>`;
+                output.innerHTML += `<div class="text-white">[*] Analyzing target: ${fullNumber} ...</div>`;
+                
+                setTimeout(() => {
+                    output.innerHTML += `<div class="text-green">[+] Target Found: WhatsApp Business Account (Active)</div><br>`;
+                    runMassReport(fullNumber, output);
+                }, 1000);
+            }, 800);
+        }, 500);
     }
 
-    // Final Success Box Logic
-    function showFinalResult(number) {
-        const output = document.getElementById('terminal-output');
-        
-        // Add a small delay before showing the final box
+    // Phase 2: The Logs & Proxy Rotation
+    function runMassReport(fullNumber, output) {
+        let sentCount = 150; 
+        let logCount = 0;
+        const maxLogs = 40; 
+
+        const interval = setInterval(() => {
+            logCount++;
+            sentCount += Math.floor(Math.random() * 5) + 1; 
+            
+            // Randomly choose what type of log to print to look real
+            const logType = Math.random();
+            
+            if (logType > 0.85) {
+                // Proxy rotation log
+                output.innerHTML += `<div class="text-blue">[+] ROTATING PROXY: ${randomIP()} -> ${randomIP()}</div>`;
+            } else if (logType > 0.75) {
+                // Bypass log
+                output.innerHTML += `<div class="text-yellow">[!] Bypassing WhatsApp Rate Limit... [OK]</div>`;
+            } else {
+                // Standard report log
+                const status = Math.random() > 0.9 ? "SUCCESS" : "PENDING";
+                const colorClass = status === "SUCCESS" ? "text-green" : "text-red";
+                output.innerHTML += `<div class="${colorClass}">[REPORT] Target: ${fullNumber} | Sent: ${sentCount} | STATUS: ${status}</div>`;
+            }
+
+            window.scrollTo(0, document.body.scrollHeight);
+
+            if (logCount >= maxLogs) {
+                clearInterval(interval);
+                showProgressBar(fullNumber, output);
+            }
+        }, 120); // Speed of logs
+    }
+
+    // Phase 3: Fake Progress Bar
+    function showProgressBar(fullNumber, output) {
+        output.innerHTML += `<br><div class="text-green">[*] Compiling reports and sending to WhatsApp Support...</div>`;
+        let progressDiv = document.createElement('div');
+        progressDiv.className = 'text-white';
+        output.appendChild(progressDiv);
+
+        let percent = 0;
+        const progressInterval = setInterval(() => {
+            percent += Math.floor(Math.random() * 15) + 5;
+            if (percent > 100) percent = 100;
+            
+            let bars = Math.floor(percent / 5);
+            let empty = 20 - bars;
+            let barString = "█".repeat(bars) + "░".repeat(empty);
+            
+            progressDiv.innerHTML = `[${barString}] ${percent}%`;
+
+            if (percent === 100) {
+                clearInterval(progressInterval);
+                showFinalResult(fullNumber, output);
+            }
+        }, 200);
+    }
+
+    // Phase 4: Final ASCII Box
+    function showFinalResult(number, output) {
         setTimeout(() => {
             output.innerHTML += `
             <br>
@@ -235,14 +279,15 @@
             <div class="text-white">Press ENTER to return... <span class="blink">█</span></div>
             `;
             
-            // Listen for Enter to reload page
+            window.scrollTo(0, document.body.scrollHeight);
+
             document.addEventListener('keydown', function returnToMenu(e) {
                 if (e.key === 'Enter') {
                     location.reload();
                 }
             });
 
-        }, 500); 
+        }, 600); 
     }
 </script>
 
